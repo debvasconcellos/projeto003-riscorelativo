@@ -1,0 +1,650 @@
+// Identificar valores nulos
+
+SELECT
+COUNTIF(user_id IS NULL) AS nulls_user_id,
+COUNTIF (age IS NULL) AS nulls_age,
+COUNTIF (sex IS NULL) AS nulls_sex,
+COUNTIF (last_month_salary IS NULL) AS nulls_last_month_salary,
+COUNTIF (number_dependents IS NULL) AS nulls_number_dependents
+FROM `projeto003-supercaja.riscodeperda.user_info`
+
+SELECT
+COUNTIF(loan_id IS NULL) AS nulls_loan_id,
+COUNTIF (user_id IS NULL) AS nulls_user_id,
+COUNTIF (loan_type IS NULL) AS nulls_loan_type
+FROM `projeto003-supercaja.riscodeperda.loans_outstanding`
+
+SELECT
+COUNTIF(user_id IS NULL) AS nulls_user_id,
+COUNTIF (more_90_days_overdue IS NULL) AS nulls_more_90_days_overdue,
+COUNTIF (using_lines_not_secured_personal_assets IS NULL) AS nulls_using_lines_not_secured_personal_assets,
+COUNTIF (number_times_delayed_payment_loan_30_59_days IS NULL) AS nulls_number_times_delayed_payment_loan_30_59_days,
+COUNTIF (debt_ratio IS NULL) AS nulls_debt_ratio,
+COUNTIF (number_times_delayed_payment_loan_60_89_days IS NULL) AS nulls_number_times_delayed_payment_loan_60_89_days
+FROM `projeto003-supercaja.riscodeperda.loans_detail`
+
+SELECT
+COUNTIF (user_id IS NULL) AS nulls_user_id,
+COUNTIF (default_flag IS NULL) AS nulls_default_flag
+FROM `projeto003-supercaja.riscodeperda.default`
+
+//Identificar e tratar valores duplicados
+SELECT user_id, COUNT(*)
+FROM `projeto003-supercaja.riscodeperda.user_info`
+GROUP BY user_id 
+HAVING COUNT(*) > 1;
+
+SELECT user_id, COUNT(*)
+FROM `projeto003-supercaja.riscodeperda.loans_outstanding`
+GROUP BY user_id 
+HAVING COUNT(*) > 1;
+
+SELECT loan_id, COUNT(*)
+FROM `projeto003-supercaja.riscodeperda.loans_outstanding`
+GROUP BY loan_id 
+HAVING COUNT(*) > 1;
+
+SELECT user_id, COUNT(*)
+FROM `projeto003-supercaja.riscodeperda.loans_detail`
+GROUP BY user_id 
+HAVING COUNT(*) > 1;
+
+SELECT user_id, COUNT(*)
+FROM `projeto003-supercaja.riscodeperda.default`
+GROUP BY user_id 
+HAVING COUNT(*) > 1;
+
+//Observar a flag e os valores nulo
+SELECT *
+FROM `projeto003-supercaja.riscodeperda.user_info` AS tp
+LEFT JOIN `projeto003-supercaja.riscodeperda.default` AS ts
+ON tp.user_id = ts.user_id
+
+//Observando estatística descritiva (mín, máx, média, desvio padrão e mediana)
+SELECT
+    MAX(age) AS max_age,
+    MIN(age) AS min_age,
+    AVG(age) AS avg_age,
+    STDDEV_POP(age) AS desvio_padrao_age,  
+    MAX(last_month_salary) AS max_last_month_salary,
+    MIN(last_month_salary) AS min_last_month_salary,
+    AVG(last_month_salary) AS avg_last_month_salary,
+    STDDEV_POP(last_month_salary) AS desvio_padrao_last_month_salary,  
+    MAX(number_dependents) AS max_number_dependents,
+    MIN(number_dependents) AS min_number_dependents,
+    AVG(number_dependents) AS avg_number_dependents, 
+    STDDEV_POP(number_dependents) AS desvio_padrao_number_dependents,  
+   FROM `projeto003-supercaja.riscodeperda.user_info_flag`
+
+   SELECT
+   PERCENTILE_CONT(last_month_salary, 0.5) OVER () AS mediana_last_month_salary,
+   PERCENTILE_CONT(number_dependents, 0.5) OVER () AS mediana_number_dependents,
+   PERCENTILE_CONT(age, 0.5) OVER () AS mediana_age,
+   FROM `projeto003-supercaja.riscodeperda.user_info_flag`
+
+SELECT
+    MAX(more_90_days_overdue) AS max_more_90_days_overdue,
+    MIN(more_90_days_overdue) AS min_max_more_90_days_overdue,
+    AVG(more_90_days_overdue) AS avg_max_more_90_days_overdue,
+    STDDEV_POP(more_90_days_overdue) AS desvio_padrao_more_90_days_overdue,
+    MAX(using_lines_not_secured_personal_assets) AS max_using_lines_not_secured_personal_assets,
+    MIN(using_lines_not_secured_personal_assets) AS min_using_lines_not_secured_personal_assets,
+    AVG(using_lines_not_secured_personal_assets) AS avg_using_lines_not_secured_personal_assets,
+    STDDEV_POP(using_lines_not_secured_personal_assets) AS desvio_padrao_using_lines_not_secured_personal_assets,
+    MAX(number_times_delayed_payment_loan_30_59_days) AS max_number_times_delayed_payment_loan_30_59_days,
+    MIN(number_times_delayed_payment_loan_30_59_days) AS min_number_times_delayed_payment_loan_30_59_days,
+    AVG(number_times_delayed_payment_loan_30_59_days) AS avg_number_times_delayed_payment_loan_30_59_days,
+    STDDEV_POP(number_times_delayed_payment_loan_30_59_days) AS desvio_padrao_number_times_delayed_payment_loan_30_59_days,
+    MAX(number_times_delayed_payment_loan_60_89_days) AS max_number_times_delayed_payment_loan_60_89_days,
+    MIN(number_times_delayed_payment_loan_60_89_days) AS min_number_times_delayed_payment_loan_60_89_days,
+    AVG(number_times_delayed_payment_loan_60_89_days) AS avg_number_times_delayed_payment_loan_60_89_days, 
+    STDDEV_POP(number_times_delayed_payment_loan_60_89_days) AS desvio_padrao_number_times_delayed_payment_loan_60_89_days,
+    MAX(debt_ratio) AS max_debt_ratio,
+    MIN(debt_ratio) AS min_debt_ratio,
+    AVG(debt_ratio) AS avg_debt_ratio, 
+    STDDEV_POP(debt_ratio) AS desvio_padrao_debt_ratio,
+   FROM `projeto003-supercaja.riscodeperda.loans_detail`
+
+   SELECT
+   PERCENTILE_CONT(more_90_days_overdue, 0.5) OVER () AS mediana_more_90_days_overdue,
+   PERCENTILE_CONT(using_lines_not_secured_personal_assets, 0.5) OVER () AS mediana_using_lines_not_secured_personal_assets,
+   PERCENTILE_CONT(number_times_delayed_payment_loan_30_59_days, 0.5) OVER () AS mediana_number_times_delayed_payment_loan_30_59_days,
+   PERCENTILE_CONT(number_times_delayed_payment_loan_60_89_days, 0.5) OVER () AS mediana_number_times_delayed_payment_loan_60_89_days,
+   PERCENTILE_CONT(debt_ratio, 0.5) OVER () AS mediana_debt_ratio,
+   FROM `projeto003-supercaja.riscodeperda.loans_detail`
+   
+   //Tratando nulos pelo valor de suas medianas
+
+CREATE OR REPLACE TABLE `projeto003-supercaja.riscodeperda.user_info_flag` AS
+SELECT
+user_id,
+age,
+sex,
+IFNULL(last_month_salary, 5400) AS number_last_month_salary_corrigido,
+IFNULL(number_dependents, 0) AS number_dependents_corrigido,
+default_flag,
+FROM `projeto003-supercaja.riscodeperda.user_info_flag`
+
+//Observando correlação entre variáveis
+SELECT
+CORR (more_90_days_overdue, number_times_delayed_payment_loan_30_59_days) AS more90days_3059days_corr,
+CORR (more_90_days_overdue, number_times_delayed_payment_loan_60_89_days) AS more90days_6089days_corr,
+CORR (number_times_delayed_payment_loan_30_59_days, number_times_delayed_payment_loan_60_89_days) AS _3059days_6089days_corr,
+FROM `projeto003-supercaja.riscodeperda.loans_detail`
+
+SELECT
+CORR (age_percentile, last_month_salary_percentile) AS age_salary_corr,
+CORR (age_percentile, lines_not_secured_percentile) AS age_lines_corr,
+CORR (age_percentile, total_loans_percentile ) AS age_loans_corr,
+CORR (age_percentile, debt_ratio_percentile) AS age_debt_corr,
+CORR (age_percentile, has_delay) AS age_delay,
+CORR (age_percentile, has_dependents) AS age_dependents_corr,
+CORR (last_month_salary_percentile, has_delay) AS salary_delay_corr,
+CORR (last_month_salary_percentile, debt_ratio_percentile) AS salary_ratio_corr,
+CORR (last_month_salary_percentile, total_loans_percentile) AS salary_loans_corr,
+CORR (age_percentile, default_flag) AS age_flag_corr,
+CORR (last_month_salary_percentile, default_flag) AS salary_flag_corr,
+CORR (total_loans_percentile, default_flag) AS loans_flag_corr,
+CORR (debt_ratio_percentile, default_flag) AS ratio_flag_corr,
+CORR (has_delay, default_flag) AS delay_flag_corr,
+CORR (has_dependents, default_flag) AS dependents_flag_corr
+from `projeto003-supercaja.riscodeperda.users_loans_relative_risk`
+
+ //Identificando e tratando inconsistências em variáveis categóricas
+ SELECT DISTINCT loan_type
+FROM `projeto003-supercaja.riscodeperda.loans_outstanding`;
+
+SELECT
+  loan_id,
+  user_id,
+  CASE
+    WHEN LOWER(loan_type) IN ('real estate', 'real estate') THEN 'Real Estate'
+    WHEN LOWER(loan_type) IN ('other', 'other', 'others') THEN 'Other'
+    ELSE loan_type
+  END AS loan_type_corrigido
+FROM
+`projeto003-supercaja.riscodeperda.loans_outstanding`;
+
+//Verificar e alterar tipos de dados
+CREATE OR REPLACE TABLE `projeto003-supercaja.riscodeperda.user_info_flag` AS
+SELECT
+user_id,
+age,
+sex,
+SAFE_CAST(number_last_month_salary_corrigido AS INT64) AS number_last_month_salary_corrigido,
+number_dependents_corrigido,
+default_flag,
+FROM `projeto003-supercaja.riscodeperda.user_info_flag`
+
+//Criando novas variáveis
+SELECT
+user_id,
+COUNT(DISTINCT loan_id) AS total_loans,
+SUM(CASE WHEN loan_type_corrigido = 'Real Estate' THEN 1 ELSE 0 END) AS real_estate_loans,
+SUM (CASE WHEN loan_type_corrigido = 'Other' THEN 1 ELSE 0 END) AS other_loans,
+FROM `projeto003-supercaja.riscodeperda.loans_outstanding_corrigida`
+GROUP BY
+user_id; 
+
+//Unindo as tabelas
+CREATE TABLE `projeto003-supercaja.riscodeperda.users_loans_full`
+AS SELECT 
+u.user_id,
+u.age,
+u.sex,
+u.number_last_month_salary_corrigido,
+u.number_dependents_corrigido,
+u.default_flag,
+l.more_90_days_overdue,
+l.using_lines_not_secured_personal_assets,
+l.number_times_delayed_payment_loan_30_59_days,
+l.debt_ratio,
+l.number_times_delayed_payment_loan_60_89_days,
+t.total_loans,
+t.real_estate_loans,
+t.other_loans,
+FROM 
+`projeto003-supercaja.riscodeperda.user_info_flag` u
+LEFT JOIN
+`projeto003-supercaja.riscodeperda.loans_detail` l
+ON
+u.user_id = l.user_id
+LEFT JOIN
+`projeto003-supercaja.riscodeperda.total_loans` t
+ON
+u.user_id = t.user_id;
+
+//Unindo as tabelas sem valores nulos presentes na anterior 
+CREATE TABLE `projeto003-supercaja.riscodeperda.users_loans_clean`
+AS SELECT 
+u.user_id,
+u.age,
+u.sex,
+u.number_last_month_salary_corrigido,
+u.number_dependents_corrigido,
+u.default_flag,
+l.more_90_days_overdue,
+l.using_lines_not_secured_personal_assets,
+l.number_times_delayed_payment_loan_30_59_days,
+l.debt_ratio,
+l.number_times_delayed_payment_loan_60_89_days,
+t.total_loans,
+t.real_estate_loans,
+t.other_loans,
+FROM 
+`projeto003-supercaja.riscodeperda.user_info_flag` u
+INNER JOIN
+`projeto003-supercaja.riscodeperda.loans_detail` l
+ON
+u.user_id = l.user_id
+INNER JOIN
+`projeto003-supercaja.riscodeperda.total_loans` t
+ON
+u.user_id = t.user_id;
+
+//Observando as divisões das variáveis em percentis
+SELECT
+  APPROX_QUANTILES(age, 100)[OFFSET(20)] AS p20,
+  APPROX_QUANTILES(age, 100)[OFFSET(40)] AS p40,
+  APPROX_QUANTILES(age, 100)[OFFSET(60)] AS p60,
+  APPROX_QUANTILES(age, 100)[OFFSET(80)] AS p80
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+SELECT
+  APPROX_QUANTILES(age, 100)[OFFSET(25)] AS p25,
+  APPROX_QUANTILES(age, 100)[OFFSET(50)] AS p50,
+  APPROX_QUANTILES(age, 100)[OFFSET(75)] AS p75
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+SELECT
+  APPROX_QUANTILES(total_loans, 100)[OFFSET(20)] AS p20,
+  APPROX_QUANTILES(total_loans, 100)[OFFSET(40)] AS p40,
+  APPROX_QUANTILES(total_loans, 100)[OFFSET(60)] AS p60,
+  APPROX_QUANTILES(total_loans, 100)[OFFSET(80)] AS p80
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+SELECT
+  APPROX_QUANTILES(number_last_month_salary_corrigido, 100)[OFFSET(20)] AS p20,
+  APPROX_QUANTILES(number_last_month_salary_corrigido, 100)[OFFSET(40)] AS p40,
+  APPROX_QUANTILES(number_last_month_salary_corrigido, 100)[OFFSET(60)] AS p60,
+  APPROX_QUANTILES(number_last_month_salary_corrigido, 100)[OFFSET(80)] AS p80
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+SELECT
+  APPROX_QUANTILES(debt_ratio, 100)[OFFSET(20)] AS p20,
+  APPROX_QUANTILES(debt_ratio, 100)[OFFSET(40)] AS p40,
+  APPROX_QUANTILES(debt_ratio, 100)[OFFSET(60)] AS p60,
+  APPROX_QUANTILES(debt_ratio, 100)[OFFSET(80)] AS p80
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+SELECT
+  APPROX_QUANTILES(using_lines_not_secured_personal_assets, 100)[OFFSET(20)] AS p20,
+  APPROX_QUANTILES(using_lines_not_secured_personal_assets, 100)[OFFSET(40)] AS p40,
+  APPROX_QUANTILES(using_lines_not_secured_personal_assets, 100)[OFFSET(60)] AS p60,
+  APPROX_QUANTILES(using_lines_not_secured_personal_assets, 100)[OFFSET(80)] AS p80
+FROM
+`projeto003-supercaja.riscodeperda.users_loans_clean`
+
+//Dividindo no BQ as variáveis de interesse em percentis (20%)
+WITH quartis AS (
+  SELECT
+    user_id,
+    age,
+    sex,
+    number_last_month_salary_corrigido,
+    number_dependents_corrigido,
+    default_flag,
+    using_lines_not_secured_personal_assets,
+    number_times_delayed_payment_loan_30_59_days,
+    more_90_days_overdue,
+    debt_ratio,
+    total_loans,
+    real_estate_loans,
+    other_loans,
+    NTILE(5) OVER (ORDER BY age) AS age_percentile,
+    NTILE(5) OVER (ORDER BY number_last_month_salary_corrigido) AS last_month_salary_percentile,
+    NTILE(5) OVER (ORDER BY using_lines_not_secured_personal_assets) AS lines_not_secured_percentile,
+    NTILE(5) OVER (ORDER BY debt_ratio) AS debt_ratio_percentile,
+    NTILE(5) OVER (ORDER BY total_loans) AS total_loans_percentile,
+    CASE
+        WHEN number_times_delayed_payment_loan_30_59_days > 0 
+             OR number_times_delayed_payment_loan_60_89_days > 0 
+             OR more_90_days_overdue > 0 THEN 1
+        ELSE 0
+    END AS has_delay,
+    CASE
+        WHEN number_dependents_corrigido > 0 THEN 1
+        ELSE 0
+    END AS has_dependents,
+    CASE
+        WHEN more_90_days_overdue > 0 THEN 1
+        ELSE 0
+    END AS has_more_90_days_overdue
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loans_clean`
+)
+SELECT
+  *,
+  CASE
+    WHEN age_percentile = 1 THEN '21-39'
+    WHEN age_percentile = 2 THEN '40-48'
+    WHEN age_percentile = 3 THEN '49-56'
+    WHEN age_percentile = 4 THEN '57-65'
+    ELSE '+65'
+  END AS age_group
+FROM
+  quartis;
+  
+  //Tabela auxiliar para observar as variáveis de data não utilizada no final
+  
+  WITH quartis AS (
+  SELECT
+    default_flag,
+    CASE
+      WHEN number_times_delayed_payment_loan_30_59_days > 0 THEN 1
+      ELSE 0
+    END AS has_30_59_days
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loans_clean`
+)
+, aggregated_data AS (
+  SELECT 
+    has_30_59_days,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    quartis
+  GROUP BY
+    has_30_59_days
+)
+SELECT
+  has_30_59_days,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) FROM quartis) AS relative_risk
+FROM
+  aggregated_data
+ORDER BY
+  has_30_59_days;
+  
+  WITH quartis AS (
+  SELECT
+    default_flag,
+    CASE
+      WHEN number_times_delayed_payment_loan_60_89_days > 0 THEN 1
+      ELSE 0
+    END AS has_60_89_days
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loans_clean`
+)
+, aggregated_data AS (
+  SELECT 
+    has_60_89_days,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    quartis
+  GROUP BY
+    has_60_89_days
+)
+SELECT
+  has_60_89_days,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) FROM quartis) AS relative_risk
+FROM
+  aggregated_data
+ORDER BY
+  has_60_89_days;
+  
+  //Transformando as variáveis de percentis em dummies (binárias)
+  CREATE OR REPLACE TABLE `projeto003-supercaja.riscodeperda.users_loans_score`
+AS SELECT
+user_id,
+age,
+sex,
+number_last_month_salary_corrigido,
+number_dependents_corrigido,
+default_flag, 
+using_lines_not_secured_personal_assets,
+more_90_days_overdue,
+debt_ratio,
+total_loans,
+real_estate_loans,
+other_loans,
+has_delay,
+has_dependents,
+has_more_90_days_overdue,
+CASE
+WHEN age_percentile <= 2 THEN 1
+ELSE 0
+END AS
+age_risk,
+CASE
+WHEN last_month_salary_percentile <= 2 THEN 1
+ELSE 0
+END AS
+salary_risk,
+CASE
+WHEN total_loans <= 2 THEN 1
+ELSE 0
+END AS
+total_loans_risk,
+CASE
+WHEN lines_not_secured_percentile = 5 THEN 1
+ELSE 0
+END AS
+lines_not_secured_risk,
+CASE
+WHEN debt_ratio_percentile = 4 THEN 1
+ELSE 0
+END AS
+debt_ratio_risk
+FROM
+`projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  
+  
+  //Matriz de Confusão (Analisando o Score)
+  WITH score AS (
+  SELECT
+    *,
+    age_risk + salary_risk + total_loans_risk + lines_not_secured_risk + has_more_90_days_overdue AS score_consult
+  FROM `projeto003-supercaja.riscodeperda.users_loans_score`
+),
+flag_risk AS (
+  SELECT
+    user_id,
+    CASE WHEN score_consult > 2 THEN 1
+         ELSE 0
+    END AS score_flag
+  FROM
+    score
+),
+predictions AS (
+  SELECT
+    s.user_id,
+    s.default_flag,
+    s.score_default,
+    f.score_flag
+  FROM
+    score s
+  JOIN
+    flag_risk f
+  ON
+    s.user_id = f.user_id
+),
+confusion_matrix AS (
+  SELECT
+    COUNT(*) AS total,
+    SUM(CASE WHEN score_flag = 1 AND default_flag = 1 THEN 1 ELSE 0 END) AS true_positive,
+    SUM(CASE WHEN score_flag = 1 AND default_flag = 0 THEN 1 ELSE 0 END) AS false_positive,
+    SUM(CASE WHEN score_flag = 0 AND default_flag = 1 THEN 1 ELSE 0 END) AS false_negative,
+    SUM(CASE WHEN score_flag = 0 AND default_flag = 0 THEN 1 ELSE 0 END) AS true_negative
+  FROM
+    predictions
+),
+metric AS (
+  SELECT 
+    true_positive,
+    false_positive,
+    false_negative,
+    true_negative,
+    (true_positive + true_negative) / (true_positive + false_positive + false_negative + true_negative) AS accuracy,
+    CASE WHEN (true_positive + false_positive) = 0 THEN 0 ELSE true_positive / (true_positive + false_positive) END AS precision,
+    CASE WHEN (true_positive + false_negative) = 0 THEN 0 ELSE true_positive / (true_positive + false_negative) END AS recall,
+    CASE WHEN (true_positive + false_positive + true_positive + false_negative) = 0 THEN 0 
+         ELSE 2 * ( (true_positive / (true_positive + false_positive)) * (true_positive / (true_positive + false_negative)) ) / 
+              ( (true_positive / (true_positive + false_positive)) + (true_positive / (true_positive + false_negative)) ) 
+    END AS f1_score
+  FROM
+    confusion_matrix
+)
+
+SELECT
+  true_positive,
+  false_positive,
+  false_negative,
+  true_negative,
+  accuracy,
+  precision,
+  recall,
+  f1_score
+FROM
+  metric;
+
+//Matriz de Confusão com Undersampling (Amostra de 10% de adimplentes)
+WITH score AS (
+  SELECT
+    *,
+    age_risk + salary_risk + total_loans_risk + lines_not_secured_risk + has_more_90_days_overdue AS score_consult
+  FROM `projeto003-supercaja.riscodeperda.users_loans_score`
+),
+flag_risk AS (
+  SELECT
+    user_id,
+    CASE WHEN score_consult > 2 THEN 1
+         ELSE 0
+    END AS score_flag
+  FROM
+    score
+),
+compliants AS (
+  SELECT *
+  FROM score
+  WHERE default_flag = 0
+),
+sample_compliants AS (
+  SELECT *
+  FROM compliants
+  WHERE RAND() <= 0.10
+),
+defaulters AS (
+  SELECT *
+  FROM score
+  WHERE default_flag = 1
+),
+selected_data AS (
+  SELECT * FROM sample_compliants
+  UNION ALL
+  SELECT * FROM defaulters
+),
+predictions AS (
+  SELECT
+    s.user_id,
+    s.default_flag,
+    s.score_default,
+    f.score_flag
+  FROM
+    selected_data s
+  JOIN
+    flag_risk f
+  ON
+    s.user_id = f.user_id
+),
+confusion_matrix AS (
+  SELECT
+    COUNT(*) AS total,
+    SUM(CASE WHEN score_flag = 1 AND default_flag = 1 THEN 1 ELSE 0 END) AS true_positive,
+    SUM(CASE WHEN score_flag = 1 AND default_flag = 0 THEN 1 ELSE 0 END) AS false_positive,
+    SUM(CASE WHEN score_flag = 0 AND default_flag = 1 THEN 1 ELSE 0 END) AS false_negative,
+    SUM(CASE WHEN score_flag = 0 AND default_flag = 0 THEN 1 ELSE 0 END) AS true_negative
+  FROM
+    predictions
+),
+metric AS (
+  SELECT 
+    true_positive,
+    false_positive,
+    false_negative,
+    true_negative,
+    (true_positive + true_negative) / (true_positive + false_positive + false_negative + true_negative) AS accuracy,
+    CASE WHEN (true_positive + false_positive) = 0 THEN 0 ELSE true_positive / (true_positive + false_positive) END AS precision,
+    CASE WHEN (true_positive + false_negative) = 0 THEN 0 ELSE true_positive / (true_positive + false_negative) END AS recall,
+    CASE WHEN (true_positive + false_positive + true_positive + false_negative) = 0 THEN 0 
+         ELSE 2 * ( (true_positive / (true_positive + false_positive)) * (true_positive / (true_positive + false_negative)) ) / 
+              ( (true_positive / (true_positive + false_positive)) + (true_positive / (true_positive + false_negative)) ) 
+    END AS f1_score
+  FROM
+    confusion_matrix
+)
+
+SELECT
+  true_positive,
+  false_positive,
+  false_negative,
+  true_negative,
+  accuracy,
+  precision,
+  recall,
+  f1_score
+FROM
+  metric;
+  
+  //Tabela Final com a criação da variável score_default
+  CREATE OR REPLACE TABLE `projeto003-supercaja.riscodeperda.users_loans_score`
+AS SELECT
+*,
+    age_risk + salary_risk + total_loans_risk + lines_not_secured_risk + has_more_90_days_overdue AS score_default
+    FROM `projeto003-supercaja.riscodeperda.users_loans_score`
+  
+  //Criando novas variáveis categóricas no Looker Studio
+
+//Tem Dependentes (has_dependents_label):
+IF(number_dependents_corrigido > 0, "Sim", "Não")
+//Tem Flag (default_flag_name):
+IF(default_flag > 0, "Sim", "Não")
+//Faixa Etária (age_group):
+CASE 
+  WHEN age >= 21 AND age <= 30 THEN "21-30 anos" 
+  WHEN age >= 31 AND age <= 40 THEN "31-40 anos"
+  WHEN age >= 41 AND age <= 50 THEN "41-50 anos"
+  WHEN age >= 51 AND age <= 64 THEN "51-64 anos"
+  WHEN age >= 65 THEN "65 anos ou mais"
+END
+//Idade de Risco (age_risk_flag)
+IF(age_risk > 0, "Alto Risco", "Baixo Risco")
+//Mais de 90 dias de Atraso Risco(has_more_90_days_flag)
+IF(has_more_90_days_overdue > 0, "Alto Risco", "Baixo Risco")
+//Usando linhas de crédito não asseguradas por bens pessoais Risco (lines_not_secured_risk_flag)
+IF(lines_not_secured_risk > 0, "Alto Risco", "Baixo Risco")
+//Número de Empréstimos Agrupado (loans_group)
+CASE 
+  WHEN total_loans >= 1 AND total_loans <= 4 THEN "Até 4" 
+  WHEN total_loans >= 5 AND total_loans <= 7 THEN "5 - 7"
+  WHEN total_loans >= 8 AND total_loans <= 10 THEN "8 - 10"
+   WHEN total_loans >= 11 THEN "Mais de 10"
+END
+//Último mês de Salário Risco (salary_risk_flag)
+IF(salary_risk > 0, "Alto Risco", "Baixo Risco")
+Score de Risco (score_flag)
+IF(score_default >= 3, "Alto Risco", "Baixo Risco")
+
