@@ -339,7 +339,204 @@ SELECT
   END AS age_group
 FROM
   quartis;
+
+// Identificando o risco relativo
   
+  WITH
+age_risk AS (
+  SELECT
+    age_percentile,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    age_percentile
+)
+SELECT
+  age_percentile,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  age_risk
+ORDER BY
+  age_percentile;
+
+  WITH
+risco_relativo AS (
+  SELECT
+    last_month_salary_percentile,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    last_month_salary_percentile
+)
+SELECT
+  last_month_salary_percentile,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  last_month_salary_percentile;
+
+  WITH
+risco_relativo AS (
+  SELECT
+    lines_not_secured_percentile,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    lines_not_secured_percentile
+)
+SELECT
+  lines_not_secured_percentile,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  lines_not_secured_percentile;
+
+WITH
+risco_relativo AS (
+  SELECT
+    debt_ratio_percentile,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    debt_ratio_percentile
+)
+SELECT
+  debt_ratio_percentile,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  debt_ratio_percentile;
+
+ WITH
+risco_relativo AS (
+  SELECT
+    total_loans_percentile,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    total_loans_percentile
+)
+SELECT
+  total_loans_percentile,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  total_loans_percentile;
+ 
+
+WITH
+risco_relativo AS (
+  SELECT
+    has_delay,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    has_delay
+)
+SELECT
+  has_delay,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  has_delay;
+
+WITH
+risco_relativo AS (
+  SELECT
+    has_dependents,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    has_dependents
+)
+SELECT
+  has_dependents,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+  has_dependents;
+
+
+WITH
+risco_relativo AS (
+  SELECT
+    has_more_90_days_overdue,
+    COUNT(*) AS total_clients,
+    SUM(default_flag) AS total_default, 
+    AVG(default_flag) AS default_rate 
+  FROM
+    `projeto003-supercaja.riscodeperda.users_loan_relative_risk`
+  GROUP BY
+    has_more_90_days_overdue
+)
+SELECT
+ has_more_90_days_overdue,
+  total_clients,
+  total_default,
+  default_rate,
+  default_rate / (SELECT AVG(default_flag) 
+ FROM `projeto003-supercaja.riscodeperda.users_loan_relative_risk`) AS relative_risk
+FROM
+  risco_relativo
+ORDER BY
+ has_more_90_days_overdue;  
+
+
   //Tabela auxiliar para observar as variáveis de data não utilizada no final
   
   WITH quartis AS (
